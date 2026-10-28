@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ExifInjector.App/ExifInjector.App.csproj" />
+  <Project Path="ExifInjector.Core/ExifInjector.Core.csproj" />
+</Solution>

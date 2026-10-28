@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="ExifInjector.App.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Exif Injector">
+
+    <Grid Padding="20" RowSpacing="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock Text="Metadata to inject" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <Grid ColumnSpacing="12" RowSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0"
+                          Content="Set date taken"
+                          VerticalAlignment="Bottom"
+                          IsChecked="{x:Bind ViewModel.ApplyDateTaken, Mode=TwoWay}" />
+
+                <CalendarDatePicker Grid.Column="1"
+                                    Header="Date"
+                                    MinWidth="180"
+                                    IsEnabled="{x:Bind ViewModel.ApplyDateTaken, Mode=OneWay}"
+                                    Date="{x:Bind ViewModel.SelectedDate, Mode=TwoWay}" />
+
+                <TimePicker Grid.Column="2"
+                            Header="Time"
+                            ClockIdentifier="24HourClock"
+                            MinWidth="150"
+                            IsEnabled="{x:Bind ViewModel.ApplyDateTaken, Mode=OneWay}"
+                            SelectedTime="{x:Bind ViewModel.SelectedTime, Mode=TwoWay}" />
+
+                <NumberBox Grid.Column="3"
+                           Header="Minutes added per subsequent file"
+                           SpinButtonPlacementMode="Compact"
+                           Minimum="0"
+                           Maximum="1440"
+                           HorizontalAlignment="Left"
+                           MinWidth="240"
+                           IsEnabled="{x:Bind ViewModel.ApplyDateTaken, Mode=OneWay}"
+                           Value="{x:Bind ViewModel.IncrementMinutes, Mode=TwoWay}" />
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Spacing="8">
+            <TextBox Header="IPTC Caption-Abstract"
+                     PlaceholderText="Caption / description"
+                     Text="{x:Bind ViewModel.Caption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBox Header="IPTC Keywords (comma or newline separated)"
+                     PlaceholderText="holiday, family, 2015"
+                     Text="{x:Bind ViewModel.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBox Header="Exif UserComment"
+                     PlaceholderText="Free text comment"
+                     Text="{x:Bind ViewModel.UserComment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Header="GPS latitude (decimal degrees)"
+                         PlaceholderText="47.6062"
+                         Text="{x:Bind ViewModel.Latitude, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Grid.Column="1"
+                         Header="GPS longitude (decimal degrees)"
+                         PlaceholderText="-122.3321"
+                         Text="{x:Bind ViewModel.Longitude, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Spacing="8">
+            <CheckBox Content="Skip files that already have a valid Exif date taken"
+                      IsChecked="{x:Bind ViewModel.SkipFilesWithExistingDate, Mode=TwoWay}" />
+            <CheckBox Content="Older files: write only the date when the other tags are not supported by the file's Exif version"
+                      IsChecked="{x:Bind ViewModel.RestrictToDateWhenTagsUnsupported, Mode=TwoWay}" />
+            <CheckBox Content="Include subfolders when a folder is selected"
+                      IsChecked="{x:Bind ViewModel.IncludeSubfolders, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="Select files..."
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.SelectFilesCommand}" />
+                <Button Content="Select folder..."
+                        Command="{x:Bind ViewModel.SelectFolderCommand}" />
+                <Button Content="Cancel"
+                        Command="{x:Bind ViewModel.CancelCommand}" />
+                <Button Content="Clear log"
+                        Command="{x:Bind ViewModel.ClearActivityCommand}" />
+                <ProgressBar Width="220"
+                             VerticalAlignment="Center"
+                             Maximum="{x:Bind ViewModel.ProgressMaximum, Mode=OneWay}"
+                             Value="{x:Bind ViewModel.ProgressValue, Mode=OneWay}" />
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="3"
+                BorderThickness="1"
+                CornerRadius="4"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+            <ListView ItemsSource="{x:Bind ViewModel.Activity, Mode=OneWay}"
+                      SelectionMode="None"
+                      FontFamily="Consolas"
+                      FontSize="12" />
+        </Border>
+
+        <TextBlock Grid.Row="4"
+                   Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                   TextWrapping="Wrap" />
+    </Grid>
+</Window>
